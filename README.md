@@ -73,6 +73,7 @@ uvicorn main:app --reload
 ### Frontend | 前端开发
 ```bash
 cd frontend
+npm install --save-dev @types/react @types/react-dom
 npm install
 npm run dev
 ```
