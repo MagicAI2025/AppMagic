@@ -1,67 +1,66 @@
 # App Magic AI
-> AI-powered Smart App Generator | AI驱动的智能应用生成器
+> AI-powered Smart App Generator
 
 Create complete applications using natural language descriptions, just like magic.
-像魔法一样，用自然语言描述就能创建完整的应用程序。
 
-## ✨ Features | 特性
+## ✨ Features
 
 - 🪄 Instant App Creation
-  > 秒级应用生成，节省90%开发时间
+  > Generate applications in seconds, saving 90% development time
 - 🎯 Natural Language to Code
-  > 用自然语言描述即可生成完整应用
+  > Generate complete applications from natural language descriptions
 - 🔄 Continuous Evolution
-  > 应用持续优化，自动适应新需求
+  > Continuous application optimization, automatically adapting to new requirements
 - 👥 Team Efficiency
-  > 团队协作效率提升300%
+  > Boost team collaboration efficiency by 300%
 - 💡 Smart Suggestions
-  > 智能代码建议，加速开发流程
+  > Intelligent code suggestions to accelerate development
 - 🛡️ Enterprise Ready
-  > 企业级安全保障，可立即部署
+  > Enterprise-grade security, ready for immediate deployment
 - 📊 Visual Management
-  > 可视化项目管理，直观且高效
+  > Visual project management, intuitive and efficient
 - 🔍 Code Quality Assurance
-  > 自动化代码审查，确保代码质量
+  > Automated code review ensuring code quality
 - 🚀 Quick Deployment
-  > 一键部署上线，快速投入使用
+  > One-click deployment for rapid implementation
 
-## 🚀 Quick Start | 快速开始
+## 🚀 Quick Start
 
-### Using Docker | 使用 Docker
+### Using Docker
 
-1. Clone the repository | 克隆仓库
+1. Clone the repository
 ```bash
 git clone https://github.com/AppMagic-AI/app-magic.git
 cd app-magic
 ```
 
-2. Set up environment variables | 配置环境变量
+2. Set up environment variables
 
-Create `backend/.env` | 创建后端环境配置:
+Create `backend/.env`:
 ```bash
 DATABASE_URL=postgresql://user:password@db:5432/dbname
 SECRET_KEY=your-secret-key
 OPENAI_API_KEY=your-openai-api-key
 ```
 
-Create `frontend/.env.local` | 创建前端环境配置:
+Create `frontend/.env.local`:
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-3. Start the application | 启动应用
+3. Start the application
 ```bash
 docker-compose up -d
 ```
 
-4. Access the application | 访问应用
-- Frontend | 前端: http://localhost:3000
-- Backend API | 后端接口: http://localhost:8000
-- API Documentation | 接口文档: http://localhost:8000/docs
+4. Access the application
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Documentation: http://localhost:8000/docs
 
-## 🛠️ Development | 开发指南
+## 🛠️ Development Guide
 
-### Backend | 后端开发
+### Backend Development
 ```bash
 cd backend
 python -m venv venv
@@ -70,7 +69,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-### Frontend | 前端开发
+### Frontend Development
 ```bash
 cd frontend
 npm install --save-dev @types/react @types/react-dom typescript @types/node
@@ -78,67 +77,66 @@ npm install
 npm run dev
 ```
 
-## 📁 Project Structure | 项目结构
+## 📁 Project Structure
 ```
 app-magic/
-├── backend/                 # Backend code | 后端代码
-│   ├── alembic/            # Database migrations | 数据库迁移
-│   ├── models/             # Data models | 数据模型
-│   ├── services/           # Business logic | 业务逻辑
-│   └── main.py            # Main application | 主应用
-├── frontend/               # Frontend code | 前端代码
+├── backend/                 # Backend code
+│   ├── alembic/            # Database migrations
+│   ├── models/             # Data models
+│   ├── services/           # Business logic
+│   └── main.py            # Main application
+├── frontend/               # Frontend code
 │   ├── src/
-│   │   ├── components/    # React components | React组件
-│   │   ├── pages/        # Page components | 页面组件
-│   │   └── utils/        # Utility functions | 工具函数
-│   └── public/           # Static assets | 静态资源
-└── docker-compose.yml    # Docker configuration | Docker配置
+│   │   ├── components/    # React components
+│   │   ├── pages/        # Page components
+│   │   └── utils/        # Utility functions
+│   └── public/           # Static assets
+└── docker-compose.yml    # Docker configuration
 ```
 
-## 🔨 Usage | 使用方法
+## 🔨 Usage
 
-1. Register an account | 注册账号
-2. Login to the system | 登录系统
-3. Create a new project | 创建新项目:
-   - Describe your requirements | 描述你的需求
-   - Select project type | 选择项目类型
-   - Click "Generate Project" | 点击"生成项目"
-4. View and modify code | 查看和修改代码
-5. Create versions | 创建版本
-6. Add comments | 添加评论
+1. Register an account
+2. Login to the system
+3. Create a new project:
+   - Describe your requirements
+   - Select project type
+   - Click "Generate Project"
+4. View and modify code
+5. Create versions
+6. Add comments
 
-## 🔧 Troubleshooting | 故障排除
+## 🔧 Troubleshooting
 
-### Common Issues | 常见问题
+### Common Issues
 
-1. Database Connection Errors | 数据库连接错误:
-   - Check PostgreSQL service | 检查PostgreSQL服务
-   - Verify credentials | 验证凭据
+1. Database Connection Errors:
+   - Check PostgreSQL service
+   - Verify credentials
 
-2. API Errors | API错误:
-   - Verify API key | 验证API密钥
-   - Check usage limits | 检查使用限制
+2. API Errors:
+   - Verify API key
+   - Check usage limits
 
-3. CORS Issues | 跨域问题:
-   - Check API URL | 检查API地址
-   - Verify CORS settings | 验证CORS设置
+3. CORS Issues:
+   - Check API URL
+   - Verify CORS settings
 
-## 📝 Contributing | 贡献指南
+## 📝 Contributing Guide
 
-1. Fork the repository | Fork仓库
-2. Create feature branch | 创建功能分支
-3. Commit changes | 提交更改
-4. Push to branch | 推送分支
-5. Create Pull Request | 创建PR
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
-## 📄 License | 许可证
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## 🙏 Acknowledgments | 致谢
+## 🙏 Acknowledgments
 
-- FastAPI - Backend Framework | 后端框架
-- Next.js - Frontend Framework | 前端框架
-- OpenAI - AI Support | AI支持
-- All open source libraries | 所有开源库
+- FastAPI - Backend Framework
+- Next.js - Frontend Framework
+- OpenAI - AI Support
+- All open source libraries
