@@ -3,6 +3,31 @@
 
 Create complete applications using natural language descriptions, just like magic.
 
+## 🎮 Example Applications
+
+### 🌟 Intelligent Chatbot
+Generate LLM-powered chat applications with features like:
+- Multi-model LLM support (GPT-4, Claude, etc.)
+- Real-time conversation
+- Context management
+- Custom knowledge base integration
+
+### 🌟 E-commerce Platform
+Create full-featured online stores including:
+- Shopping cart system
+- Payment integration
+- Order management
+- Inventory tracking
+- User reviews
+
+### 🌟 Enterprise Management System
+Automatically generate enterprise modules such as:
+- CRM (Customer Relationship Management)
+- ERP (Enterprise Resource Planning)
+- HRM (Human Resource Management)
+- Project management
+- Analytics dashboard
+
 ## ✨ Features
 
 - 🪄 Instant App Creation
