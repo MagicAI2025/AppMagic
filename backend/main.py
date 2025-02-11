@@ -24,7 +24,7 @@ from middleware.error_handler import error_handler
 app = FastAPI()
 ai_generator = AICodeGenerator()
 
-# 添加 CORS 配置
+# Add CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -33,17 +33,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 挂载静态文件
+# Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Add error handler middleware
 app.middleware("http")(error_handler)
 
 class ProjectRequirements(BaseModel):
     description: str
     project_type: Optional[str] = "web"
+    model: Optional[str] = None
 
-# 添加请求模型
+# Add request models
 class ProjectUpdate(BaseModel):
     description: Optional[str] = None
     project_type: Optional[str] = None
@@ -58,12 +58,11 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-# 添加请求模型
+# Add request models
 class ShareCreate(BaseModel):
     user_id: int
     permission: SharePermission
 
-# 添加请求模型
 class CommentCreate(BaseModel):
     content: str
     file_path: Optional[str] = None
@@ -84,27 +83,35 @@ async def generate_project(
     current_user: User = Depends(AuthService.get_current_user)
 ):
     try:
-        # 分析需求
+        # Allow model selection in request
+        model = requirements.model if hasattr(requirements, 'model') else None
+        
+        # Analyze requirements
         project_structure = await ai_generator.analyze_requirements(
-            requirements.description
+            requirements.description,
+            model=model
         )
         
-        # 生成代码
-        generated_code = await ai_generator.generate_code(project_structure)
+        # Generate code
+        generated_code = await ai_generator.generate_code(
+            project_structure,
+            model=model
+        )
         
-        # 保存到数据库
+        # Save to database
         project = await DatabaseService.create_project(
             db=db,
             description=requirements.description,
             project_type=requirements.project_type,
             structure=project_structure,
             generated_files=generated_code,
-            owner_id=current_user.id
+            owner_id=current_user.id,
+            model=requirements.model
         )
         
         return {
             "status": "success",
-            "message": "项目生成成功",
+            "message": "Project generated successfully",
             "project_id": project.id,
             "files": {f.file_path: f.content for f in project.files}
         }
@@ -115,7 +122,7 @@ async def generate_project(
 async def get_project(project_id: int, db: Session = Depends(get_db)):
     project = await DatabaseService.get_project(db, project_id)
     if not project:
-        raise HTTPException(status_code=404, detail="项目不存在")
+        raise HTTPException(status_code=404, detail="Project not found")
     
     files = await DatabaseService.get_project_files(db, project_id)
     return {
@@ -171,11 +178,11 @@ async def update_project(
     )
     
     if not project:
-        raise HTTPException(status_code=404, detail="项目不存在")
+        raise HTTPException(status_code=404, detail="Project not found")
         
     return {
         "status": "success",
-        "message": "项目更新成功",
+        "message": "Project updated successfully",
         "project": {
             "id": project.id,
             "description": project.description,
@@ -188,11 +195,11 @@ async def update_project(
 async def delete_project(project_id: int, db: Session = Depends(get_db)):
     success = await DatabaseService.delete_project(db, project_id)
     if not success:
-        raise HTTPException(status_code=404, detail="项目不存在")
+        raise HTTPException(status_code=404, detail="Project not found")
         
     return {
         "status": "success",
-        "message": "项目删除成功"
+        "message": "Project deleted successfully"
     }
 
 @app.get("/api/projects/search")
@@ -216,7 +223,7 @@ async def search_projects(
 
 @app.get("/api/projects/stats")
 async def get_project_stats(db: Session = Depends(get_db)):
-    """获取项目统计信息"""
+    """Get project statistics"""
     total_projects = db.query(Project).count()
     projects_by_type = db.query(
         Project.project_type,
@@ -250,7 +257,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     )
     return {
         "status": "success",
-        "message": "用户注册成功",
+        "message": "User registered successfully",
         "user_id": created_user.id
     }
 
@@ -265,7 +272,7 @@ async def login(
     if not user:
         raise HTTPException(
             status_code=401,
-            detail="邮箱或密码错误",
+            detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -310,7 +317,7 @@ async def share_project(
     )
     return {
         "status": "success",
-        "message": "项目共享成功",
+        "message": "Project shared successfully",
         "share": {
             "id": project_share.id,
             "project_id": project_share.project_id,
@@ -333,10 +340,10 @@ async def remove_share(
         current_user
     )
     if not success:
-        raise HTTPException(status_code=404, detail="共享记录不存在")
+        raise HTTPException(status_code=404, detail="Share record not found")
     return {
         "status": "success",
-        "message": "已取消共享"
+        "message": "Share removed successfully"
     }
 
 @app.get("/api/projects/{project_id}/shares")
@@ -541,7 +548,7 @@ async def get_version_files(
 
 @app.get("/api/health")
 async def health_check():
-    """检查系统健康状态"""
+    """Check system health status"""
     db_healthy = await db_manager.health_check()
     return {
         "status": "healthy" if db_healthy else "unhealthy",
@@ -555,11 +562,11 @@ async def backup_project(
     db: Session = Depends(get_db),
     current_user: User = Depends(AuthService.get_current_user)
 ):
-    """备份项目数据"""
+    """Backup project data"""
     backup_data = await DatabaseService.backup_project(db, project_id)
     return {
         "status": "success",
-        "message": "项目备份成功",
+        "message": "Project backup successful",
         "backup_data": backup_data
     }
 
@@ -570,11 +577,11 @@ async def save_project_files(
     db: Session = Depends(get_db),
     current_user: User = Depends(AuthService.get_current_user)
 ):
-    """保存项目文件"""
+    """Save project files"""
     saved_files = await DatabaseService.save_project_files(db, project_id, files)
     return {
         "status": "success",
-        "message": "文件保存成功",
+        "message": "Files saved successfully",
         "files": [
             {
                 "path": f.file_path,

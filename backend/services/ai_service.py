@@ -1,35 +1,43 @@
 from openai import OpenAI
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 import json
 
 class AICodeGenerator:
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-        self.model = "gpt-4-turbo-preview"  # 使用最新的 GPT-4 模型
+        self.openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        self.deepseek_client = OpenAI(
+            api_key=os.getenv('DEEPSEEK_API_KEY'),
+            base_url=os.getenv('DEEPSEEK_API_BASE', "https://api.deepseek.com/v1")
+        )
+        self.default_model = os.getenv('DEFAULT_LLM_MODEL', "gpt-4-turbo-preview")
 
-    async def analyze_requirements(self, description: str) -> Dict:
+    async def analyze_requirements(self, description: str, model: Optional[str] = None) -> Dict:
         """分析项目需求并生成项目结构"""
+        # Select model based on configuration or parameter
+        client = self.deepseek_client if (model or self.default_model).startswith('deepseek') else self.openai_client
+        model = model or self.default_model
+        
         prompt = f"""
-        作为一个专业的软件架构师，请分析以下项目需求并生成详细的项目结构：
+        As a professional software architect, please analyze the following project requirements and generate a detailed project structure:
 
-        需求描述：
+        Requirements:
         {description}
 
-        请生成：
-        1. 项目架构
-        2. 技术栈选择
-        3. 文件结构
-        4. 主要功能模块
-        5. API 接口设计
-        6. 数据库模型
+        Please generate:
+        1. Project architecture
+        2. Technology stack
+        3. File structure
+        4. Main functional modules
+        5. API interface design
+        6. Database models
 
-        以 JSON 格式返回结果。
+        Return the result in JSON format.
         """
 
         try:
-            response = await self.client.chat.completions.create(
-                model=self.model,
+            response = await client.chat.completions.create(
+                model=model,
                 messages=[
                     {"role": "system", "content": "You are a professional software architect."},
                     {"role": "user", "content": prompt}
@@ -47,20 +55,24 @@ class AICodeGenerator:
         """根据项目结构生成代码"""
         files = {}
         
+        # Select model based on configuration
+        client = self.deepseek_client if self.default_model.startswith('deepseek') else self.openai_client
+        model = self.default_model
+        
         # 生成每个文件的代码
         for file_path in self._get_file_paths(project_structure):
             prompt = f"""
-            根据以下项目结构生成 {file_path} 的完整代码：
+            Generate complete code for {file_path} based on the following project structure:
 
-            项目结构：
+            Project Structure:
             {json.dumps(project_structure, indent=2)}
 
-            请生成符合最佳实践的、可维护的代码。
-            包含必要的注释和文档字符串。
+            Please generate maintainable code following best practices.
+            Include necessary comments and documentation.
             """
 
-            response = await self.client.chat.completions.create(
-                model=self.model,
+            response = await client.chat.completions.create(
+                model=model,
                 messages=[
                     {"role": "system", "content": "You are a professional software developer."},
                     {"role": "user", "content": prompt}

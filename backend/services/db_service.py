@@ -19,7 +19,8 @@ class DatabaseService:
         project_type: str,
         structure: Dict,
         generated_files: Dict[str, str],
-        owner_id: int
+        owner_id: int,
+        model: Optional[str] = None
     ) -> Project:
         try:
             # 创建项目记录
@@ -27,6 +28,7 @@ class DatabaseService:
                 description=description,
                 project_type=project_type,
                 structure=structure,
+                model=model,
                 owner_id=owner_id
             )
             db.add(project)

@@ -51,6 +51,23 @@ Automatically generate enterprise modules such as:
 
 ## 🚀 Quick Start
 
+<<<<<<< HEAD
+=======
+### Windows Prerequisites
+
+1. Install WSL2 (Windows Subsystem for Linux)
+```powershell
+wsl --install
+```
+
+2. Install Docker Desktop for Windows
+- Download from [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- Ensure WSL2 integration is enabled in Docker Desktop settings
+
+3. Install Git for Windows
+- Download from [Git](https://git-scm.com/download/win)
+
+>>>>>>> 848dedb (feat: initial commit with deepseek support)
 ### Using Docker
 
 1. Clone the repository
@@ -66,6 +83,8 @@ Create `backend/.env`:
 DATABASE_URL=postgresql://user:password@db:5432/dbname
 SECRET_KEY=your-secret-key
 OPENAI_API_KEY=your-openai-api-key
+DEEPSEEK_API_KEY=your-deepseek-api-key
+DEFAULT_LLM_MODEL=deepseek-coder-33b-instruct  # or gpt-4-turbo-preview
 ```
 
 Create `frontend/.env.local`:
@@ -85,11 +104,46 @@ docker-compose up -d
 
 ## 🛠️ Development Guide
 
+<<<<<<< HEAD
+=======
+### Windows Development Setup
+
+1. Backend Setup
+```powershell
+# Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start backend server
+uvicorn main:app --reload
+```
+
+2. Frontend Setup
+```powershell
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+3. Database Setup
+- Install PostgreSQL for Windows from [official website](https://www.postgresql.org/download/windows/)
+- Or use Docker:
+```powershell
+docker-compose up db
+```
+
+>>>>>>> 848dedb (feat: initial commit with deepseek support)
 ### Backend Development
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate  # Linux/Mac
+# For Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -97,11 +151,36 @@ uvicorn main:app --reload
 ### Frontend Development
 ```bash
 cd frontend
-npm install --save-dev @types/react @types/react-dom typescript @types/node
 npm install
 npm run dev
 ```
 
+<<<<<<< HEAD
+=======
+### Troubleshooting on Windows
+
+1. Port conflicts:
+```powershell
+# Check if ports are in use
+netstat -ano | findstr "3000"
+netstat -ano | findstr "8000"
+
+# Kill process by PID
+taskkill /PID <process_id> /F
+```
+
+2. Python venv issues:
+```powershell
+# If activation is blocked
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+3. Docker issues:
+- Ensure Hyper-V is enabled
+- Verify WSL2 is properly installed
+- Restart Docker Desktop
+
+>>>>>>> 848dedb (feat: initial commit with deepseek support)
 ## 📁 Project Structure
 ```
 app-magic/
@@ -118,7 +197,9 @@ app-magic/
 │   └── public/           # Static assets
 └── docker-compose.yml    # Docker configuration
 ```
+## 🔨 Usage
 
+<<<<<<< HEAD
 ## 🔨 Usage
 
 1. Register an account
@@ -155,6 +236,42 @@ app-magic/
 4. Push to branch
 5. Create Pull Request
 
+=======
+1. Register an account
+2. Login to the system
+3. Create a new project:
+   - Describe your requirements
+   - Select project type
+   - Click "Generate Project"
+4. View and modify code
+5. Create versions
+6. Add comments
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. Database Connection Errors:
+   - Check PostgreSQL service
+   - Verify credentials
+
+2. API Errors:
+   - Verify API key
+   - Check usage limits
+
+3. CORS Issues:
+   - Check API URL
+   - Verify CORS settings
+
+## 📝 Contributing Guide
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
+
+>>>>>>> 848dedb (feat: initial commit with deepseek support)
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

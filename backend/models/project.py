@@ -9,6 +9,7 @@ class Project(Base):
     id = Column(Integer, primary_key=True, index=True)
     description = Column(String, nullable=False)
     project_type = Column(String, default="web")
+    model = Column(String)  # Store which model was used
     structure = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

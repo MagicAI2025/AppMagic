@@ -59,5 +59,5 @@ class AuthService:
         if user.role != UserRole.ADMIN:
             raise HTTPException(
                 status_code=403,
-                detail="需要管理员权限"
+                detail="Admin permission required"
             ) 

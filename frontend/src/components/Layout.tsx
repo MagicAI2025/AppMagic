@@ -1,8 +1,10 @@
+import React from 'react'
 import { Fragment } from 'react'
 import Head from 'next/head'
 import { Menu, Transition } from '@headlessui/react'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useRouter } from 'next/router'
+import Logo from './Logo'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -27,10 +29,8 @@ export function Layout({ children }: LayoutProps) {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <span className="text-xl font-bold">AI APP Generator</span>
-              </div>
+            <div className="flex items-center">
+              <Logo />
             </div>
             
             <div className="flex items-center">

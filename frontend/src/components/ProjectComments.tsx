@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
 import api from '@/utils/api'
 import { toast } from 'react-hot-toast'
+import { Comment } from '../types'
 
 interface Comment {
   id: number
