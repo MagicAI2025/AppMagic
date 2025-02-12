@@ -20,6 +20,9 @@ api.interceptors.response.use(
       useAuthStore.getState().logout()
       window.location.href = '/auth/login'
     }
+    if (error.response?.status === 403) {
+      throw new Error('No permission to perform this operation')
+    }
     return Promise.reject(error)
   }
 )

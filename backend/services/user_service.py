@@ -13,13 +13,13 @@ class UserService:
         password: str,
         role: UserRole = UserRole.USER
     ) -> User:
-        # 检查邮箱是否已存在
+        # Check if email already exists
         if db.query(User).filter(User.email == email).first():
-            raise HTTPException(status_code=400, detail="邮箱已被注册")
+            raise HTTPException(status_code=400, detail="Email already registered")
             
-        # 检查用户名是否已存在
+        # Check if username already exists
         if db.query(User).filter(User.username == username).first():
-            raise HTTPException(status_code=400, detail="用户名已被使用")
+            raise HTTPException(status_code=400, detail="Username already taken")
             
         hashed_password = AuthService.get_password_hash(password)
         user = User(

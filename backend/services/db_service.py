@@ -23,7 +23,7 @@ class DatabaseService:
         model: Optional[str] = None
     ) -> Project:
         try:
-            # 创建项目记录
+            # Create project record
             project = Project(
                 description=description,
                 project_type=project_type,
@@ -34,7 +34,7 @@ class DatabaseService:
             db.add(project)
             db.flush()
             
-            # 保存生成的文件
+            # Save generated files
             for file_path, content in generated_files.items():
                 file_type = "frontend" if "frontend/" in file_path else "backend"
                 project_file = ProjectFile(
@@ -48,7 +48,7 @@ class DatabaseService:
             db.commit()
             db.refresh(project)
             
-            # 记录项目创建日志
+            # Log project creation
             logger.info(f"Project created: {project.id} by user {owner_id}")
             
             return project
@@ -58,7 +58,7 @@ class DatabaseService:
             logger.error(f"Error creating project: {str(e)}")
             raise HTTPException(
                 status_code=500,
-                detail="项目创建失败"
+                detail="Failed to create project"
             )
     
     @staticmethod
@@ -68,12 +68,12 @@ class DatabaseService:
         files: Dict[str, str]
     ) -> List[ProjectFile]:
         try:
-            # 删除现有文件
+            # Delete existing files
             db.query(ProjectFile).filter(
                 ProjectFile.project_id == project_id
             ).delete()
             
-            # 保存新文件
+            # Save new files
             saved_files = []
             for file_path, content in files.items():
                 file_type = "frontend" if "frontend/" in file_path else "backend"
@@ -94,7 +94,7 @@ class DatabaseService:
             logger.error(f"Error saving project files: {str(e)}")
             raise HTTPException(
                 status_code=500,
-                detail="文件保存失败"
+                detail="Failed to save files"
             )
     
     @staticmethod
@@ -102,11 +102,11 @@ class DatabaseService:
         db: Session,
         project_id: int
     ) -> str:
-        """备份项目数据"""
+        """Backup project data"""
         try:
             project = await DatabaseService.get_project(db, project_id)
             if not project:
-                raise HTTPException(status_code=404, detail="项目不存在")
+                raise HTTPException(status_code=404, detail="Project not found")
                 
             files = await DatabaseService.get_project_files(db, project_id)
             
@@ -115,8 +115,7 @@ class DatabaseService:
                     "id": project.id,
                     "description": project.description,
                     "project_type": project.project_type,
-                    "structure": project.structure,
-                    "created_at": str(project.created_at)
+                    "structure": project.structure
                 },
                 "files": [
                     {
@@ -127,14 +126,14 @@ class DatabaseService:
                 ]
             }
             
-            # TODO: 将备份数据保存到对象存储
+            # TODO: Save backup data to object storage
             return json.dumps(backup_data, ensure_ascii=False)
             
         except Exception as e:
             logger.error(f"Error backing up project: {str(e)}")
             raise HTTPException(
                 status_code=500,
-                detail="项目备份失败"
+                detail="Failed to backup project"
             )
     
     @staticmethod
@@ -145,7 +144,7 @@ class DatabaseService:
     ) -> Project:
         project = db.query(Project).filter(Project.id == project_id).first()
         if user and not await DatabaseService.check_project_access(db, project_id, user):
-            raise HTTPException(status_code=403, detail="没有访问权限")
+            raise HTTPException(status_code=403, detail="No access permission")
         return project
     
     @staticmethod
@@ -194,12 +193,12 @@ class DatabaseService:
         if not project:
             return False
             
-        # 首先删除相关的文件
+        # First delete related files
         db.query(ProjectFile).filter(
             ProjectFile.project_id == project_id
         ).delete()
         
-        # 然后删除项目
+        # Then delete the project
         db.delete(project)
         db.commit()
         return True
@@ -224,14 +223,44 @@ class DatabaseService:
         if not project:
             return False
             
-        # 检查是否是所有者或管理员
+        # Check if user is owner or admin
         if project.owner_id == user.id or user.role == UserRole.ADMIN:
             return True
             
-        # 检查是否有共享权限
+        # Check if user has share permission
         share = db.query(ProjectShare).filter(
             ProjectShare.project_id == project_id,
             ProjectShare.user_id == user.id
         ).first()
         
-        return share is not None 
+        return share is not None
+
+    @staticmethod
+    async def get_project_stats(
+        db: Session
+    ) -> Dict:
+        # Get project statistics
+        total_projects = db.query(Project).count()
+        
+        # Count projects by type
+        projects_by_type = db.query(
+            Project.project_type,
+            func.count(Project.id)
+        ).group_by(Project.project_type).all()
+        
+        # Get recent projects
+        recent_projects = db.query(Project).order_by(
+            desc(Project.created_at)
+        ).limit(5).all()
+        
+        return {
+            "total_projects": total_projects,
+            "projects_by_type": dict(projects_by_type),
+            "recent_projects": [
+                {
+                    "id": p.id,
+                    "description": p.description,
+                    "created_at": p.created_at
+                } for p in recent_projects
+            ]
+        } 

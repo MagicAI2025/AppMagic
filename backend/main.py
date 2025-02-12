@@ -21,7 +21,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from middleware.error_handler import error_handler
 
-app = FastAPI()
+app = FastAPI(
+    title="App Magic API",
+    description="AI-Powered Application Generation Platform",
+    version="1.0.0"
+)
 ai_generator = AICodeGenerator()
 
 # Add CORS configuration
@@ -82,6 +86,7 @@ async def generate_project(
     db: Session = Depends(get_db),
     current_user: User = Depends(AuthService.get_current_user)
 ):
+    """Generate new project"""
     try:
         # Allow model selection in request
         model = requirements.model if hasattr(requirements, 'model') else None
@@ -116,10 +121,11 @@ async def generate_project(
             "files": {f.file_path: f.content for f in project.files}
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to generate project: {str(e)}")
 
 @app.get("/api/projects/{project_id}")
 async def get_project(project_id: int, db: Session = Depends(get_db)):
+    """Get project details"""
     project = await DatabaseService.get_project(db, project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -149,6 +155,7 @@ async def list_projects(
     project_type: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
+    """Get projects list"""
     projects = await DatabaseService.list_projects(
         db, skip, limit, project_type
     )
@@ -248,18 +255,27 @@ async def get_project_stats(db: Session = Depends(get_db)):
 
 @app.post("/api/auth/register", response_model=dict)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
-    created_user = await UserService.create_user(
-        db,
-        email=user.email,
-        username=user.username,
-        password=user.password,
-        role=user.role
-    )
-    return {
-        "status": "success",
-        "message": "User registered successfully",
-        "user_id": created_user.id
-    }
+    """User registration"""
+    try:
+        created_user = await UserService.create_user(
+            db,
+            email=user.email,
+            username=user.username,
+            password=user.password,
+            role=user.role
+        )
+        return {
+            "status": "success",
+            "message": "Registration successful",
+            "user_id": created_user.id
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Registration failed: {str(e)}"
+        )
 
 @app.post("/api/auth/token", response_model=Token)
 async def login(
@@ -481,7 +497,7 @@ async def get_project_comments(
         ]
     }
 
-# 版本控制相关端点
+# Version control endpoints
 @app.post("/api/projects/{project_id}/versions")
 async def create_version(
     project_id: int,

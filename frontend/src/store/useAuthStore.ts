@@ -43,7 +43,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const token = localStorage.getItem('auth-token')
           if (token) {
-            set({ token }) // 设置token到状态
+            set({ token }) // Set token to state
             const response = await api.get('/api/users/me')
             set({ user: response.data, loading: false })
           } else {

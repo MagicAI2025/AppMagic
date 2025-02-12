@@ -16,14 +16,14 @@ const Logo: React.FC<LogoProps> = ({ className = '', width = 40, height = 40 }) 
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* 魔法棒 */}
+        {/* Magic Wand */}
         <path
           d="M30 10L35 5M25 8L26 3M32 15L37 16"
           stroke="#6366F1"
           strokeWidth="2"
           strokeLinecap="round"
         />
-        {/* AI 符号 */}
+        {/* AI Symbol */}
         <path
           d="M8 28L14 16H18L24 28"
           stroke="#6366F1"
@@ -36,7 +36,7 @@ const Logo: React.FC<LogoProps> = ({ className = '', width = 40, height = 40 }) 
           strokeWidth="2"
           strokeLinecap="round"
         />
-        {/* 魔法光环 */}
+        {/* Magic Aura */}
         <circle
           cx="20"
           cy="20"
@@ -45,7 +45,7 @@ const Logo: React.FC<LogoProps> = ({ className = '', width = 40, height = 40 }) 
           strokeWidth="2"
           strokeDasharray="4 4"
         />
-        {/* 中心星星 */}
+        {/* Center Star */}
         <path
           d="M20 12L22 18L28 20L22 22L20 28L18 22L12 20L18 18L20 12Z"
           fill="#6366F1"

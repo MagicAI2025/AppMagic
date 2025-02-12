@@ -65,16 +65,16 @@ class CollaborationService:
         created_by: int,
         files: dict
     ) -> ProjectVersion:
-        # 验证版本号格式
+        # Validate version number format
         try:
             semver.parse(version_number)
         except ValueError:
             raise HTTPException(
                 status_code=400,
-                detail="无效的版本号格式，请使用语义化版本（如：1.0.0）"
+                detail="Invalid version number format, please use semantic versioning (e.g. 1.0.0)"
             )
         
-        # 检查版本号是否已存在
+        # Check if version number already exists
         existing_version = db.query(ProjectVersion).filter(
             ProjectVersion.project_id == project_id,
             ProjectVersion.version_number == version_number
@@ -83,7 +83,7 @@ class CollaborationService:
         if existing_version:
             raise HTTPException(
                 status_code=400,
-                detail="版本号已存在"
+                detail="Version number already exists"
             )
         
         version = ProjectVersion(
@@ -95,7 +95,7 @@ class CollaborationService:
         db.add(version)
         db.flush()
         
-        # 保存文件
+        # Save files
         for file_path, content in files.items():
             version_file = VersionFile(
                 version_id=version.id,

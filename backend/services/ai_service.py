@@ -13,13 +13,15 @@ class AICodeGenerator:
         self.default_model = os.getenv('DEFAULT_LLM_MODEL', "gpt-4-turbo-preview")
 
     async def analyze_requirements(self, description: str, model: Optional[str] = None) -> Dict:
-        """分析项目需求并生成项目结构"""
+        """Analyze project requirements and generate project structure"""
         # Select model based on configuration or parameter
         client = self.deepseek_client if (model or self.default_model).startswith('deepseek') else self.openai_client
         model = model or self.default_model
         
         prompt = f"""
-        As a professional software architect, please analyze the following project requirements and generate a detailed project structure:
+        As a professional software architect, please analyze the following project requirements 
+        and generate a detailed project structure for the AppMagic project from 
+        https://github.com/MagicAI2025/AppMagic:
 
         Requirements:
         {description}
@@ -52,14 +54,14 @@ class AICodeGenerator:
             raise RuntimeError(f"AI service error: {str(e)}")
 
     async def generate_code(self, project_structure: Dict) -> Dict[str, str]:
-        """根据项目结构生成代码"""
+        """Generate code based on project structure"""
         files = {}
         
         # Select model based on configuration
         client = self.deepseek_client if self.default_model.startswith('deepseek') else self.openai_client
         model = self.default_model
         
-        # 生成每个文件的代码
+        # Generate code for each file
         for file_path in self._get_file_paths(project_structure):
             prompt = f"""
             Generate complete code for {file_path} based on the following project structure:
@@ -86,10 +88,10 @@ class AICodeGenerator:
         return files
 
     def _get_file_paths(self, project_structure: Dict) -> List[str]:
-        """从项目结构中提取需要生成的文件路径"""
+        """Extract file paths to be generated from project structure"""
         file_paths = []
         
-        # 前端文件
+        # Frontend files
         if 'frontend' in project_structure:
             file_paths.extend([
                 'frontend/src/pages/index.tsx',
@@ -98,7 +100,7 @@ class AICodeGenerator:
                 'frontend/src/styles/globals.css',
             ])
         
-        # 后端文件
+        # Backend files
         if 'backend' in project_structure:
             file_paths.extend([
                 'backend/main.py',
@@ -110,15 +112,15 @@ class AICodeGenerator:
         return file_paths
 
     async def optimize_code(self, code: str, language: str) -> str:
-        """优化生成的代码"""
+        """Optimize generated code"""
         prompt = f"""
-        请优化以下{language}代码，确保：
-        1. 代码遵循最佳实践
-        2. 性能优化
-        3. 安全性考虑
-        4. 可维护性提升
+        Please optimize the following {language} code, ensuring:
+        1. Code follows best practices
+        2. Performance optimization
+        3. Security considerations
+        4. Improved maintainability
 
-        代码：
+        Code:
         {code}
         """
 
@@ -135,14 +137,14 @@ class AICodeGenerator:
         return response.choices[0].message.content
 
     async def generate_tests(self, code: str, language: str) -> str:
-        """为生成的代码生成测试用例"""
+        """Generate test cases for the generated code"""
         prompt = f"""
-        请为以下{language}代码生成完整的测试用例：
-        1. 单元测试
-        2. 集成测试
-        3. 边界条件测试
+        Please generate complete test cases for the following {language} code:
+        1. Unit tests
+        2. Integration tests
+        3. Boundary condition tests
 
-        代码：
+        Code:
         {code}
         """
 

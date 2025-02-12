@@ -8,7 +8,7 @@ from models.user import User, UserRole
 from sqlalchemy.orm import Session
 
 class AuthService:
-    SECRET_KEY = "your-secret-key"  # 在生产环境中使用环境变量
+    SECRET_KEY = "your-secret-key"  # Use environment variable in production
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     
@@ -38,7 +38,7 @@ class AuthService:
     ) -> User:
         credentials_exception = HTTPException(
             status_code=401,
-            detail="无效的认证凭证",
+            detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:

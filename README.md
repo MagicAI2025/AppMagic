@@ -51,61 +51,187 @@ Automatically generate enterprise modules such as:
 
 ## 🚀 Quick Start
 
-<<<<<<< HEAD
-=======
-### Windows Prerequisites
+Choose one of the following installation methods:
 
-1. Install WSL2 (Windows Subsystem for Linux)
-```powershell
-wsl --install
+- [Windows Installation Guide](#windows-installation-guide)
+- [Linux Installation Guide](#linux-installation-guide)  
+- [Docker Installation Guide](#docker-installation-guide)
+
+### Windows Installation Guide
+
+1. Install Required Software
+- Python 3.9+ (https://www.python.org/downloads/)
+  * Check "Add Python to PATH" during installation
+- Node.js 16+ LTS (https://nodejs.org/)
+- MySQL (https://dev.mysql.com/downloads/installer/)
+  * Remember the database username and password
+- Git (https://git-scm.com/download/win)
+
+2. Clone Project
+```bash
+git clone https://github.com/MagicAI2025/AppMagic.git
+cd AppMagic
 ```
 
-2. Install Docker Desktop for Windows
-- Download from [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- Ensure WSL2 integration is enabled in Docker Desktop settings
-
-3. Install Git for Windows
-- Download from [Git](https://git-scm.com/download/win)
-
->>>>>>> 848dedb (feat: initial commit with deepseek support)
-### Using Docker
-
-1. Clone the repository
+3. Setup Backend
 ```bash
-git clone https://github.com/AppMagic-AI/app-magic.git
-cd app-magic
+cd backend
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-2. Set up environment variables
+4. Configure Database
+- Open MySQL command line tool
+```sql
+CREATE DATABASE appmagic CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-Create `backend/.env`:
-```bash
-DATABASE_URL=postgresql://user:password@db:5432/dbname
+5. Create Backend Environment Configuration
+Create .env file in backend directory:
+```env
+DATABASE_URL=mysql+pymysql://user:password@db:3306/appmagic
 SECRET_KEY=your-secret-key
 OPENAI_API_KEY=your-openai-api-key
 DEEPSEEK_API_KEY=your-deepseek-api-key
-DEFAULT_LLM_MODEL=deepseek-coder-33b-instruct  # or gpt-4-turbo-preview
+DEEPSEEK_API_BASE=https://api.deepseek.com/v1
+DEFAULT_LLM_MODEL=deepseek-coder-33b-instruct
+HOST=127.0.0.1
+PORT=8000
+DEBUG=True
 ```
 
-Create `frontend/.env.local`:
+6. Run Database Migration
 ```bash
+# In backend directory
+alembic upgrade head
+```
+
+7. Start Backend Service
+```bash
+# In backend directory
+uvicorn main:app --reload
+```
+
+8. Setup Frontend
+```bash
+# Open a new terminal
+cd frontend
+npm install
+```
+
+9. Create Frontend Environment Configuration
+Create .env.local in frontend directory:
+```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-3. Start the application
+10. Start Frontend Service
+```bash
+npm run dev
+```
+
+11. Access Application
+- Frontend: http://localhost:3000
+- API Documentation: http://localhost:8000/docs
+
+### Linux Installation Guide
+
+1. Install Required Software
+```bash
+# Ubuntu/Debian
+sudo apt update
+sudo apt install python3.9 python3.9-venv nodejs npm postgresql git
+
+# CentOS/RHEL
+sudo dnf install python39 nodejs postgresql-server git
+sudo postgresql-setup --initdb
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+```
+
+2. Clone Project
+```bash
+git clone https://github.com/MagicAI2025/AppMagic.git
+cd AppMagic
+```
+
+3. Setup Backend
+```bash
+cd backend
+python3.9 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+4. Configure Database
+```bash
+sudo -u postgres psql
+```
+```sql
+CREATE DATABASE appmagic;
+CREATE USER appmagic WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE appmagic TO appmagic;
+```
+
+5. Create Backend Environment Configuration
+```bash
+cp .env.example .env
+# Edit .env file to set necessary environment variables
+```
+
+6. Run Database Migration and Start Service
+```bash
+alembic upgrade head
+uvicorn main:app --reload
+```
+
+7. Setup Frontend
+```bash
+cd ../frontend
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+### Docker Installation Guide
+
+1. Install Docker and Docker Compose
+```bash
+# Ubuntu/Debian
+sudo apt install docker.io docker-compose
+
+# CentOS/RHEL
+sudo dnf install docker docker-compose
+```
+
+2. Clone Project
+```bash
+git clone https://github.com/MagicAI2025/AppMagic.git
+cd AppMagic
+```
+
+3. Configure Environment Variables
+```bash
+# Backend configuration
+cp backend/.env.example backend/.env
+# Edit backend/.env to set necessary environment variables
+
+# Frontend configuration
+cp frontend/.env.example frontend/.env.local
+```
+
+4. Start Service
 ```bash
 docker-compose up -d
 ```
 
-4. Access the application
+5. Access Application
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
 - API Documentation: http://localhost:8000/docs
 
 ## 🛠️ Development Guide
 
-<<<<<<< HEAD
-=======
 ### Windows Development Setup
 
 1. Backend Setup
@@ -131,13 +257,12 @@ npm run dev
 ```
 
 3. Database Setup
-- Install PostgreSQL for Windows from [official website](https://www.postgresql.org/download/windows/)
+- Install MySQL for Windows from [official website](https://dev.mysql.com/downloads/installer/)
 - Or use Docker:
 ```powershell
 docker-compose up db
 ```
 
->>>>>>> 848dedb (feat: initial commit with deepseek support)
 ### Backend Development
 ```bash
 cd backend
@@ -155,8 +280,6 @@ npm install
 npm run dev
 ```
 
-<<<<<<< HEAD
-=======
 ### Troubleshooting on Windows
 
 1. Port conflicts:
@@ -180,7 +303,49 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 - Verify WSL2 is properly installed
 - Restart Docker Desktop
 
->>>>>>> 848dedb (feat: initial commit with deepseek support)
+### Linux Development Setup
+
+#### Linux Specific Issues
+
+1. Permission Issues
+```bash
+# Fix directory permissions
+sudo chown -R $USER:$USER .
+```
+
+2. MySQL Connection Issues
+```bash
+# Check service status
+sudo systemctl status mysql
+
+# View logs
+sudo tail -f /var/log/mysql/mysql.log
+```
+
+### Docker Development Setup
+
+#### Docker Specific Issues
+
+1. Container Startup Issues
+```bash
+# Check container status
+docker ps -a
+
+# View container logs
+docker logs appmagic_backend_1
+docker logs appmagic_frontend_1
+```
+
+2. Data Persistence Issues
+```bash
+# View volume information
+docker volume ls
+
+# Backup data
+docker run --rm -v appmagic_mysql_data:/data -v $(pwd):/backup \
+  ubuntu tar cvf /backup/mysql_backup.tar /data
+```
+
 ## 📁 Project Structure
 ```
 app-magic/
@@ -194,14 +359,11 @@ app-magic/
 │   │   ├── components/    # React components
 │   │   ├── pages/        # Page components
 │   │   └── utils/        # Utility functions
-│   └── public/           # Static assets
-└── docker-compose.yml    # Docker configuration
+│   │   └── public/       # Static assets
+│   └── docker-compose.yml    # Docker configuration
 ```
 ## 🔨 Usage
 
-<<<<<<< HEAD
-## 🔨 Usage
-
 1. Register an account
 2. Login to the system
 3. Create a new project:
@@ -216,8 +378,8 @@ app-magic/
 
 ### Common Issues
 
-1. Database Connection Errors:
-   - Check PostgreSQL service
+1. MySQL Connection Errors:
+   - Check MySQL service
    - Verify credentials
 
 2. API Errors:
@@ -228,40 +390,32 @@ app-magic/
    - Check API URL
    - Verify CORS settings
 
-## 📝 Contributing Guide
+### Windows Specific Issues
 
-1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+1. Python Virtual Environment Activation Blocked
+```powershell
+# Run PowerShell as Administrator and execute:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-=======
-1. Register an account
-2. Login to the system
-3. Create a new project:
-   - Describe your requirements
-   - Select project type
-   - Click "Generate Project"
-4. View and modify code
-5. Create versions
-6. Add comments
+2. MySQL Connection Issues
+- Check MySQL service status
+  * Open Services (services.msc)
+  * Find MySQL service and ensure it's running
+- Verify database connection information
+  * Username (default is root)
+  * Password (set during installation)
+  * Database name (appmagic)
 
-## 🔧 Troubleshooting
+3. Port Conflict
+```powershell
+# Find processes using ports
+netstat -ano | findstr "8000"
+netstat -ano | findstr "3000"
 
-### Common Issues
-
-1. Database Connection Errors:
-   - Check PostgreSQL service
-   - Verify credentials
-
-2. API Errors:
-   - Verify API key
-   - Check usage limits
-
-3. CORS Issues:
-   - Check API URL
-   - Verify CORS settings
+# End process by PID
+taskkill /PID <process_id> /F
+```
 
 ## 📝 Contributing Guide
 
@@ -271,14 +425,17 @@ app-magic/
 4. Push to branch
 5. Create Pull Request
 
->>>>>>> 848dedb (feat: initial commit with deepseek support)
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- FastAPI - Backend Framework
-- Next.js - Frontend Framework
-- OpenAI - AI Support
-- All open source libraries
+- FastAPI - High-performance web framework for building APIs
+- Next.js - React framework for production-grade applications
+- OpenAI & DeepSeek - AI model providers
+- MySQL - Open source database
+- Docker - Containerization platform
+- TypeScript - Typed JavaScript programming language
+- TailwindCSS - Utility-first CSS framework
+- And all other open source libraries that made this project possible

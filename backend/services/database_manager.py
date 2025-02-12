@@ -36,12 +36,12 @@ class DatabaseManager:
             session.close()
     
     def init_db(self):
-        """初始化数据库表"""
+        """Initialize database tables"""
         from models.database import Base
         Base.metadata.create_all(bind=self.engine)
     
     async def health_check(self) -> bool:
-        """检查数据库连接状态"""
+        """Check database connection status"""
         try:
             with self.get_session() as session:
                 session.execute("SELECT 1")
@@ -50,5 +50,5 @@ class DatabaseManager:
             logger.error(f"Database health check failed: {str(e)}")
             return False
 
-# 创建全局数据库管理器实例
+# Create global database manager instance
 db_manager = DatabaseManager(settings.DATABASE_URL) 

@@ -14,21 +14,21 @@ class ShareService:
         permission: SharePermission,
         current_user: User
     ) -> ProjectShare:
-        # 检查项目是否存在
+        # Check if project exists
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
             
-        # 检查是否有权限共享
+        # Check sharing permissions
         if project.owner_id != current_user.id and current_user.role != "admin":
-            raise HTTPException(status_code=403, detail="没有权限共享此项目")
+            raise HTTPException(status_code=403, detail="No permission to share this project")
             
-        # 检查目标用户是否存在
+        # Check if target user exists
         target_user = db.query(User).filter(User.id == user_id).first()
         if not target_user:
-            raise HTTPException(status_code=404, detail="用户不存在")
+            raise HTTPException(status_code=404, detail="User not found")
             
-        # 检查是否已经共享
+        # Check if already shared
         existing_share = db.query(ProjectShare).filter(
             ProjectShare.project_id == project_id,
             ProjectShare.user_id == user_id
@@ -39,7 +39,7 @@ class ShareService:
             db.commit()
             return existing_share
             
-        # 创建新的共享
+        # Create new share
         share = ProjectShare(
             project_id=project_id,
             user_id=user_id,
@@ -65,10 +65,10 @@ class ShareService:
         if not share:
             return False
             
-        # 检查权限
+        # Check permissions
         project = db.query(Project).filter(Project.id == project_id).first()
         if project.owner_id != current_user.id and current_user.role != "admin":
-            raise HTTPException(status_code=403, detail="没有权限取消共享")
+            raise HTTPException(status_code=403, detail="No permission to remove share")
             
         db.delete(share)
         db.commit()
@@ -82,10 +82,10 @@ class ShareService:
     ) -> List[ProjectShare]:
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
-            raise HTTPException(status_code=404, detail="项目不存在")
+            raise HTTPException(status_code=404, detail="Project not found")
             
         if project.owner_id != current_user.id and current_user.role != "admin":
-            raise HTTPException(status_code=403, detail="没有权限查看共享信息")
+            raise HTTPException(status_code=403, detail="No permission to view share information")
             
         return db.query(ProjectShare).filter(
             ProjectShare.project_id == project_id

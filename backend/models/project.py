@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, JSON, DateTime, ForeignKey
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
@@ -26,9 +27,9 @@ class ProjectFile(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"))
-    file_path = Column(String, nullable=False)
-    content = Column(String, nullable=False)
-    file_type = Column(String)  # frontend/backend
+    file_path = Column(String(255), nullable=False)
+    content = Column(LONGTEXT, nullable=False)
+    file_type = Column(String(50))  # frontend/backend
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

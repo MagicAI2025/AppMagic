@@ -32,8 +32,8 @@ class Comment(Base):
     project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     content = Column(Text, nullable=False)
-    file_path = Column(String, nullable=True)  # 可选，用于指定具体文件的评论
-    line_number = Column(Integer, nullable=True)  # 可选，用于指定代码行的评论
+    file_path = Column(String, nullable=True)  # Optional, for file-specific comments
+    line_number = Column(Integer, nullable=True)  # Optional, for line-specific comments
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

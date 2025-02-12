@@ -22,8 +22,8 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>AI 应用生成平台</title>
-        <meta name="description" content="使用 AI 快速生成完整应用" />
+        <title>AI App Generator</title>
+        <meta name="description" content="Quickly generate complete applications using AI" />
       </Head>
       
       <nav className="bg-white shadow-sm">
@@ -37,7 +37,7 @@ export function Layout({ children }: LayoutProps) {
               {user && (
                 <Menu as="div" className="ml-3 relative">
                   <Menu.Button className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                    <span className="sr-only">打开用户菜单</span>
+                    <span className="sr-only">Open user menu</span>
                     <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
                       <span className="text-primary-700 font-medium">
                         {user.username[0].toUpperCase()}
@@ -64,7 +64,7 @@ export function Layout({ children }: LayoutProps) {
                                 active ? 'bg-gray-100' : ''
                               } block w-full text-left px-4 py-2 text-sm text-gray-700`}
                             >
-                              退出登录
+                              Sign out
                             </button>
                           )}
                         </Menu.Item>
