@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     
     # Server configuration
     HOST: str = "0.0.0.0"
-    PORT: int = 8000
+    PORT: int = 80
     DEBUG: bool = False
     
     class Config:

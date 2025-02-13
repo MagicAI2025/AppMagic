@@ -96,8 +96,8 @@ OPENAI_API_KEY=your-openai-api-key
 DEEPSEEK_API_KEY=your-deepseek-api-key
 DEEPSEEK_API_BASE=https://api.deepseek.com/v1
 DEFAULT_LLM_MODEL=deepseek-coder-33b-instruct
-HOST=127.0.0.1
-PORT=8000
+HOST=0.0.0.0
+PORT=80
 DEBUG=True
 ```
 
@@ -123,7 +123,7 @@ npm install
 9. Create Frontend Environment Configuration
 Create .env.local in frontend directory:
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:80
 ```
 
 10. Start Frontend Service
@@ -133,7 +133,7 @@ npm run dev
 
 11. Access Application
 - Frontend: http://localhost:3000
-- API Documentation: http://localhost:8000/docs
+- API Documentation: http://localhost:80/docs
 
 ### Linux Installation Guide
 
@@ -141,13 +141,12 @@ npm run dev
 ```bash
 # Ubuntu/Debian
 sudo apt update
-sudo apt install python3.9 python3.9-venv nodejs npm postgresql git
+sudo apt install python3.9 python3.9-venv nodejs npm mysql-server git
 
 # CentOS/RHEL
-sudo dnf install python39 nodejs postgresql-server git
-sudo postgresql-setup --initdb
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
+sudo dnf install python39 nodejs mysql-server git
+sudo systemctl start mysqld
+sudo systemctl enable mysqld
 ```
 
 2. Clone Project
@@ -166,12 +165,13 @@ pip install -r requirements.txt
 
 4. Configure Database
 ```bash
-sudo -u postgres psql
+sudo mysql
 ```
 ```sql
 CREATE DATABASE appmagic;
-CREATE USER appmagic WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE appmagic TO appmagic;
+CREATE USER 'appmagic'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON appmagic.* TO 'appmagic'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
 5. Create Backend Environment Configuration
@@ -228,7 +228,7 @@ docker-compose up -d
 
 5. Access Application
 - Frontend: http://localhost:3000
-- API Documentation: http://localhost:8000/docs
+- API Documentation: http://localhost:80/docs
 
 ## 🛠️ Development Guide
 
@@ -286,7 +286,7 @@ npm run dev
 ```powershell
 # Check if ports are in use
 netstat -ano | findstr "3000"
-netstat -ano | findstr "8000"
+netstat -ano | findstr "80"
 
 # Kill process by PID
 taskkill /PID <process_id> /F
@@ -362,80 +362,3 @@ app-magic/
 │   │   └── public/       # Static assets
 │   └── docker-compose.yml    # Docker configuration
 ```
-## 🔨 Usage
-
-1. Register an account
-2. Login to the system
-3. Create a new project:
-   - Describe your requirements
-   - Select project type
-   - Click "Generate Project"
-4. View and modify code
-5. Create versions
-6. Add comments
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-1. MySQL Connection Errors:
-   - Check MySQL service
-   - Verify credentials
-
-2. API Errors:
-   - Verify API key
-   - Check usage limits
-
-3. CORS Issues:
-   - Check API URL
-   - Verify CORS settings
-
-### Windows Specific Issues
-
-1. Python Virtual Environment Activation Blocked
-```powershell
-# Run PowerShell as Administrator and execute:
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-2. MySQL Connection Issues
-- Check MySQL service status
-  * Open Services (services.msc)
-  * Find MySQL service and ensure it's running
-- Verify database connection information
-  * Username (default is root)
-  * Password (set during installation)
-  * Database name (appmagic)
-
-3. Port Conflict
-```powershell
-# Find processes using ports
-netstat -ano | findstr "8000"
-netstat -ano | findstr "3000"
-
-# End process by PID
-taskkill /PID <process_id> /F
-```
-
-## 📝 Contributing Guide
-
-1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- FastAPI - High-performance web framework for building APIs
-- Next.js - React framework for production-grade applications
-- OpenAI & DeepSeek - AI model providers
-- MySQL - Open source database
-- Docker - Containerization platform
-- TypeScript - Typed JavaScript programming language
-- TailwindCSS - Utility-first CSS framework
-- And all other open source libraries that made this project possible

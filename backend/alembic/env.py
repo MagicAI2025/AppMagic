@@ -47,4 +47,10 @@ def run_migrations_online():
 if context.is_offline_mode():
     run_migrations_offline()
 else:
-    run_migrations_online() 
+    run_migrations_online()
+
+# Set the database URL from environment variable
+config.set_main_option(
+    "sqlalchemy.url",
+    os.getenv("DATABASE_URL", "mysql+pymysql://user:password@localhost/appmagic")
+) 

@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -16,7 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Run database migrations
-CMD alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 
+CMD alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80
 
-# Install React type definitions
-RUN cd frontend && npm install @types/react @types/react-dom 
+EXPOSE 80 
