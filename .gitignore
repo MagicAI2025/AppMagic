@@ -45,4 +45,33 @@ logs/
 *.log
 
 # Database
+*.sqlite
+
+# 依赖目录
+node_modules/
+.env
+.DS_Store
+
+# 构建产物
+.next/
+out/
+dist/
+
+# 日志文件
+*.log
+
+# 编辑器配置
+.vscode/
+.idea/
+.env*.local
+.env
+.DS_Store
+*.pem
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+*.swp
+*.swo
+*.log
 *.sqlite 

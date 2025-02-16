@@ -59,7 +59,7 @@ export default function Login() {
                 name="email"
                 type="email"
                 required
-                placeholder="Enter your email"
+                placeholder="Email address"
                 className="input-primary rounded-t-md"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -74,7 +74,7 @@ export default function Login() {
                 name="password"
                 type="password"
                 required
-                placeholder="Enter your password"
+                placeholder="Password"
                 className="input-primary rounded-b-md"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -82,6 +82,14 @@ export default function Login() {
             </div>
           </div>
 
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <a href="#" className="font-medium text-primary-600 hover:text-primary-500">
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+  
           <div>
             <button
               type="submit"
@@ -92,6 +100,43 @@ export default function Login() {
             </button>
           </div>
         </form>
+        
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div>
+              <button 
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                <span className="sr-only">Sign in with Google</span>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  {/* Google SVG path */}
+                </svg>
+              </button>
+            </div>
+
+            <div>
+              <button
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                <span className="sr-only">Sign in with GitHub</span>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  {/* GitHub SVG path */}
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

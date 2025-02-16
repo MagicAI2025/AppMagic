@@ -14,6 +14,7 @@ export default function Register() {
     password: '',
     confirmPassword: ''
   })
+  const [passwordsMatch, setPasswordsMatch] = useState(true)
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,8 +40,14 @@ export default function Register() {
     }
   }
   
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setFormData({ ...formData, confirmPassword: value })
+    setPasswordsMatch(value === formData.password)
+  }
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <Logo className="mx-auto" />
@@ -55,7 +62,7 @@ export default function Register() {
           </Link>
         </p>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="space-y-4">
             <div>
               <label htmlFor="email" className="sr-only">
                 Email address
@@ -66,7 +73,7 @@ export default function Register() {
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="Enter your email"
+                placeholder="Email address"
                 className="input-primary rounded-t-md"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -82,7 +89,7 @@ export default function Register() {
                 type="text"
                 autoComplete="username"
                 required
-                placeholder="Enter your username"
+                placeholder="Username"
                 className="input-primary rounded-t-md"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
@@ -98,34 +105,38 @@ export default function Register() {
                 type="password"
                 autoComplete="new-password"
                 required
-                placeholder="Enter your password"
-                className="input-primary rounded-b-md"
+                placeholder="Password"
+                className="input-primary rounded-t-md"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
             </div>
             <div>
-              <label htmlFor="confirm-password" className="sr-only">
-                Confirm password
+              <label htmlFor="confirmPassword" className="sr-only">
+                Confirm Password
               </label>
               <input
-                id="confirm-password"
-                name="confirm-password"
+                id="confirmPassword"
+                name="confirmPassword"
                 type="password"
-                autoComplete="new-password"
                 required
-                placeholder="Enter your password again"
-                className="input-primary rounded-b-md"
+                placeholder="Confirm Password"
+                className={`input-primary rounded-b-md ${
+                  !passwordsMatch ? 'border-red-500' : ''
+                }`}
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                onChange={handleConfirmPasswordChange}
               />
+              {!passwordsMatch && (
+                <p className="text-red-500 text-sm mt-1">Passwords do not match</p>
+              )}
             </div>
           </div>
 
           <div>
             <button
               type="submit"
-              className="btn-primary w-full"
+              className="btn-primary w-full py-3 text-lg"
               disabled={loading}
             >
               {loading ? 'Registering...' : 'Register'}

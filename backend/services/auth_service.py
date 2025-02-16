@@ -2,10 +2,13 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import HTTPException, Security
+from fastapi import HTTPException, Security, Depends
 from fastapi.security import OAuth2PasswordBearer
-from models.user import User, UserRole
+from models.user import User
 from sqlalchemy.orm import Session
+from models.database import get_db
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class AuthService:
     SECRET_KEY = "your-secret-key"  # Use environment variable in production
@@ -13,7 +16,6 @@ class AuthService:
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
     
     @classmethod
     def verify_password(cls, plain_password: str, hashed_password: str) -> bool:
@@ -30,11 +32,10 @@ class AuthService:
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, cls.SECRET_KEY, algorithm=cls.ALGORITHM)
     
-    @classmethod
+    @staticmethod
     async def get_current_user(
-        cls,
         token: str = Security(oauth2_scheme),
-        db: Session = None
+        db: Session = Depends(get_db)
     ) -> User:
         credentials_exception = HTTPException(
             status_code=401,
@@ -42,7 +43,7 @@ class AuthService:
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:
-            payload = jwt.decode(token, cls.SECRET_KEY, algorithms=[cls.ALGORITHM])
+            payload = jwt.decode(token, AuthService.SECRET_KEY, algorithms=[AuthService.ALGORITHM])
             user_id: str = payload.get("sub")
             if user_id is None:
                 raise credentials_exception
@@ -60,4 +61,7 @@ class AuthService:
             raise HTTPException(
                 status_code=403,
                 detail="Admin permission required"
-            ) 
+            )
+
+# 将静态方法导出为模块级别的名称，便于导入使用。
+get_current_user = AuthService.get_current_user 

@@ -7,6 +7,7 @@ interface Props {
 
 interface State {
   hasError: boolean
+  error?: Error
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
@@ -22,6 +23,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error:', error, errorInfo)
     toast.error('Something went wrong')
+    this.setState({ 
+      hasError: true,
+      error: new Error(`${error.toString()} \n ${errorInfo.componentStack}`) 
+    })
   }
 
   render() {
@@ -38,6 +43,14 @@ export class ErrorBoundary extends React.Component<Props, State> {
             >
               Try again
             </button>
+            {this.state.error && (
+              <details className="mt-4 text-sm text-red-600">
+                <summary>Error Details</summary>
+                <pre className="whitespace-pre-wrap mt-2">
+                  {this.state.error.toString()}
+                </pre>
+              </details>
+            )}
           </div>
         </div>
       )

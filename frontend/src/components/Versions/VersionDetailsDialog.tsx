@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { CodeEditor } from '../CodeEditor'
+import { DiffEditor } from '@monaco-editor/react'
 
 interface VersionFile {
   path: string
@@ -114,11 +114,11 @@ export function VersionDetailsDialog({ isOpen, onClose, version }: Props) {
                             </div>
                           </div>
                           <div className="max-h-96 overflow-auto">
-                            <CodeEditor
-                              value={file.content}
+                            <DiffEditor
+                              original={previousVersionContent}
+                              modified={file.content}
                               language={file.type}
-                              onChange={() => {}}
-                              readOnly={true}
+                              options={{ readOnly: true }}
                             />
                           </div>
                         </div>

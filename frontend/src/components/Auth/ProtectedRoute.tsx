@@ -6,15 +6,20 @@ import { LoadingSpinner } from '../LoadingSpinner'
 
 interface Props {
   children: React.ReactNode
+  publicRoutes?: string[]
 }
 
-export function ProtectedRoute({ children }: Props) {
+export function ProtectedRoute({ children, publicRoutes = [] }: Props) {
   const router = useRouter()
   const { token, loading } = useAuthStore()
 
+  const pathIsPublic = publicRoutes.some(path => 
+    router.pathname === path || router.pathname.startsWith(`${path}/`)
+  )
+
   useEffect(() => {
-    if (!loading && !token) {
-      router.push('/auth/login')
+    if (!loading && !token && !pathIsPublic) {
+      router.push(`/auth/login?redirect=${encodeURIComponent(router.asPath)}`)
     }
   }, [loading, token, router])
 

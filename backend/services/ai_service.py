@@ -1,7 +1,9 @@
 from openai import OpenAI
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 import json
+from sqlalchemy.orm import Session
+from models.project import Project
 
 class AICodeGenerator:
     def __init__(self):
@@ -159,3 +161,14 @@ class AICodeGenerator:
         )
 
         return response.choices[0].message.content 
+
+class AIService:
+    @staticmethod
+    async def generate_code(prompt: str, language: str, db: Session) -> str:
+        # TODO: Implement code generation logic
+        return f"# Generated code for prompt: {prompt}\n# Language: {language}"
+
+    @staticmethod
+    async def analyze_requirements(description: str, model: str = None) -> Dict[str, Any]:
+        # TODO: Implement requirements analysis logic
+        return {"description": description, "model": model} 

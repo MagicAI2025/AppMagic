@@ -8,13 +8,14 @@ class Project(Base):
     __tablename__ = "projects"
     
     id = Column(Integer, primary_key=True, index=True)
-    description = Column(String, nullable=False)
+    name = Column(String, index=True)
+    description = Column(String, index=True)
     project_type = Column(String, default="web")
     model = Column(String)  # Store which model was used
     structure = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id"))
     
     files = relationship("ProjectFile", back_populates="project")
     owner = relationship("User", back_populates="projects")
